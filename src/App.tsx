@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import catalogData from './catalog.json'
 import type { Category, Item } from './pricing'
 import { categorySummary, money } from './pricing'
-import { useCart, usePersisted } from './store'
+import { useCart, usePersisted, type SyncState } from './store'
 import CategoryBlock from './components/CategoryBlock'
 import CartPanel from './components/CartPanel'
 import DetailModal from './components/DetailModal'
@@ -12,7 +12,7 @@ const CATALOG = catalogData as Category[]
 type Density = 'comfortable' | 'compact' | 'list'
 
 export default function App() {
-  const { cart, setQty, clear } = useCart()
+  const { cart, setQty, clear, sync } = useCart()
   const [density, setDensity] = usePersisted<Density>('dishware-density', 'comfortable')
   const [split, setSplit] = usePersisted<boolean>('dishware-split', false)
   const [active, setActive] = usePersisted<string>('dishware-cat', 'all')
@@ -62,6 +62,7 @@ export default function App() {
           </div>
 
           <div className="ml-auto flex items-center gap-2">
+            <SyncBadge state={sync} />
             <DensityToggle value={density} onChange={setDensity} />
             <button
               onClick={() => setSplit((s) => !s)}
@@ -132,7 +133,7 @@ export default function App() {
           </div>
           <div className="mt-10 flex flex-col items-center gap-3 border-t border-line/60 pt-5">
             <p className="text-center text-xs text-muted">
-              Prices from Everful Wholesale · selections saved to this browser · {CATALOG.reduce((a, c) => a + c.items.length, 0)} styles
+              Prices from Everful Wholesale · {sync === 'local' ? 'saved to this browser' : 'shared cart, synced live'} · {CATALOG.reduce((a, c) => a + c.items.length, 0)} styles
             </p>
             <ResetButton qty={grand.qty} onReset={clear} />
           </div>
@@ -211,6 +212,33 @@ export default function App() {
   )
 }
 
+function SyncBadge({ state }: { state: SyncState }) {
+  if (state === 'local') return null
+  const map = {
+    connecting: { dot: 'bg-amber-400', text: 'Connecting…', ring: 'border-amber-300/50 text-amber-700 bg-amber-50' },
+    online: { dot: 'bg-emerald-500', text: 'Live', ring: 'border-emerald-300/50 text-emerald-700 bg-emerald-50' },
+    offline: { dot: 'bg-stone-400', text: 'Offline', ring: 'border-line text-muted bg-card' },
+  }[state]
+  return (
+    <span
+      className={`hidden h-8 items-center gap-1.5 rounded-full border px-2.5 text-xs font-medium sm:flex ${map.ring}`}
+      title={
+        state === 'online'
+          ? 'Shared cart is syncing live across devices'
+          : state === 'offline'
+          ? 'No connection — changes save locally and sync when back online'
+          : 'Connecting to the shared cart…'
+      }
+    >
+      <span className="relative flex h-2 w-2">
+        {state === 'online' && <span className={`absolute inline-flex h-full w-full animate-ping rounded-full ${map.dot} opacity-60`} />}
+        <span className={`relative inline-flex h-2 w-2 rounded-full ${map.dot}`} />
+      </span>
+      {map.text}
+    </span>
+  )
+}
+
 function ResetButton({ qty, onReset }: { qty: number; onReset: () => void }) {
   const [arming, setArming] = useState(false)
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -237,7 +265,7 @@ function ResetButton({ qty, onReset }: { qty: number; onReset: () => void }) {
           ? 'border-red-400 bg-red-50 text-red-600'
           : 'border-line/70 bg-transparent text-muted/70 hover:border-red-300 hover:text-red-500 disabled:opacity-40 disabled:hover:border-line/70 disabled:hover:text-muted/70'
       }`}
-      title="Wipe saved cart + view settings from this browser"
+      title="Empty the shared cart for everyone (and clear this browser's cache)"
     >
       <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
         <path d="M2.5 4.5h11M6 4.5V3.2c0-.5.4-.9.9-.9h2.2c.5 0 .9.4.9.9V4.5M4 4.5l.6 8.3c0 .5.5.9 1 .9h4.8c.5 0 .9-.4 1-.9L13 4.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
