@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import type { Category, Cart, Item } from '../pricing'
-import { categorySummary, money, unitPrice } from '../pricing'
+import { categorySummary, itemUnit, money } from '../pricing'
 import ProductCard from './ProductCard'
 import ListRow from './ListRow'
 
@@ -41,7 +41,7 @@ export default function CategoryBlock({
         <span className="text-xs text-muted">{category.items.length} styles</span>
         {sum.qty > 0 && (
           <span className="ml-auto flex items-center gap-2 text-sm">
-            {sum.rate > 0 && <span className="rounded-full bg-clay/10 px-2 py-0.5 text-xs font-medium text-clayDark">{sum.rate}% off</span>}
+            {sum.anyDiscount && <span className="rounded-full bg-clay/10 px-2 py-0.5 text-xs font-medium text-clayDark">volume price</span>}
             <span className="text-muted">{sum.qty} in cart</span>
             <span className="font-display text-base text-clayDark">{money(sum.subtotal)}</span>
           </span>
@@ -61,7 +61,7 @@ export default function CategoryBlock({
           for (const it of items) {
             const q = cart[it.sku] || 0
             gCount += q
-            gSub += q * unitPrice(it.price, sum.rate)
+            gSub += q * itemUnit(it, q)
           }
 
           // COMPACT: newspaper columns — each group is a self-contained block
@@ -91,8 +91,8 @@ export default function CategoryBlock({
                         key={it.sku}
                         item={it}
                         qty={cart[it.sku] || 0}
-                        unit={unitPrice(it.price, sum.rate)}
-                        discounted={sum.rate > 0}
+                        unit={itemUnit(it, cart[it.sku] || 0)}
+                        discounted={(cart[it.sku] || 0) >= 10}
                         compact
                         onQty={(n) => onQty(it.sku, n)}
                         onOpen={() => onOpen(it)}
@@ -125,7 +125,7 @@ export default function CategoryBlock({
                   {density === 'comfortable' && (
                     <p className="text-xs text-muted">
                       {items.length} {items.length === 1 ? 'style' : 'styles'}
-                      {items[0].dims && ` · ${items[0].dims.split('x')[0].trim()} across`}
+                      {category.groupType === 'size' && items[0].dims && ` · ${items[0].dims.split('x')[0].trim()} across`}
                     </p>
                   )}
                 </div>
@@ -156,8 +156,8 @@ export default function CategoryBlock({
                             key={it.sku}
                             item={it}
                             qty={cart[it.sku] || 0}
-                            unit={unitPrice(it.price, sum.rate)}
-                            discounted={sum.rate > 0}
+                            unit={itemUnit(it, cart[it.sku] || 0)}
+                            discounted={(cart[it.sku] || 0) >= 10}
                             onQty={(n) => onQty(it.sku, n)}
                             onOpen={() => onOpen(it)}
                           />
@@ -170,8 +170,8 @@ export default function CategoryBlock({
                             key={it.sku}
                             item={it}
                             qty={cart[it.sku] || 0}
-                            unit={unitPrice(it.price, sum.rate)}
-                            discounted={sum.rate > 0}
+                            unit={itemUnit(it, cart[it.sku] || 0)}
+                            discounted={(cart[it.sku] || 0) >= 10}
                             onQty={(n) => onQty(it.sku, n)}
                             onOpen={() => onOpen(it)}
                           />

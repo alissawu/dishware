@@ -74,7 +74,7 @@ function ProductCardBase({ item, qty, unit, discounted, compact, onQty, onOpen }
           </span>
           {item.series && <span className="italic">{item.series}</span>}
         </div>
-        {item.dims && <p className="text-xs text-muted">{item.dims}</p>}
+        {item.dims && item.dims !== item.color && <p className="text-xs text-muted">{item.dims}</p>}
 
         <div className="mt-auto flex items-end justify-between pt-2">
           <div className="leading-none">

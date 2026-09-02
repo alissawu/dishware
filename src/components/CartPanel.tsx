@@ -1,5 +1,5 @@
 import type { Category, Cart, Item } from '../pricing'
-import { categorySummary, money, unitPrice } from '../pricing'
+import { categorySummary, itemUnit, money } from '../pricing'
 
 type Props = {
   categories: Category[]
@@ -50,14 +50,14 @@ export default function CartPanel({ categories, cart, onQty, onOpen, onClear, co
                 <div className="mb-2 flex items-baseline justify-between">
                   <h3 className="font-display text-base text-ink">
                     {cat.label}
-                    {sum.rate > 0 && <span className="ml-2 rounded-full bg-clay/10 px-2 py-0.5 text-[11px] font-medium text-clayDark">{sum.rate}% off</span>}
+                    {sum.anyDiscount && <span className="ml-2 rounded-full bg-clay/10 px-2 py-0.5 text-[11px] font-medium text-clayDark">volume price</span>}
                   </h3>
                   <span className="text-sm text-muted">{sum.qty} · <span className="font-display text-clayDark">{money(sum.subtotal)}</span></span>
                 </div>
                 <div className="flex flex-col gap-1.5">
                   {items.map((it) => {
                     const q = cart[it.sku] || 0
-                    const u = unitPrice(it.price, sum.rate)
+                    const u = itemUnit(it, q)
                     return (
                       <div key={it.sku} className="flex items-center gap-2.5 rounded-lg bg-card px-2 py-1.5">
                         <button onClick={() => onOpen(it)} className="h-10 w-10 flex-none overflow-hidden rounded-md bg-[#efe8db]">

@@ -7,13 +7,12 @@ import QtyStepper from './QtyStepper'
 type Props = {
   item: Item | null
   category: Category | undefined
-  catQty: number
   qty: number
   onQty: (n: number) => void
   onClose: () => void
 }
 
-export default function DetailModal({ item, category, catQty, qty, onQty, onClose }: Props) {
+export default function DetailModal({ item, category, qty, onQty, onClose }: Props) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
     window.addEventListener('keydown', onKey)
@@ -81,10 +80,10 @@ export default function DetailModal({ item, category, catQty, qty, onQty, onClos
 
               {/* tier ladder for this item */}
               <div>
-                <p className="mb-2 text-xs font-medium text-muted">Volume price (per {category?.label.toLowerCase()})</p>
+                <p className="mb-2 text-xs font-medium text-muted">Volume price (per this exact style)</p>
                 <div className="flex flex-wrap gap-1.5">
                   {TIERS.map((t) => {
-                    const on = tierFor(catQty).min === t.min
+                    const on = tierFor(qty).min === t.min
                     return (
                       <div key={t.min} className={`rounded-lg border px-2.5 py-1.5 text-center ${on ? 'border-clay bg-clay text-paper' : 'border-line bg-card'}`}>
                         <div className={`text-[10px] ${on ? 'text-paper/80' : 'text-muted'}`}>{t.label}</div>

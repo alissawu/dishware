@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import catalogData from './catalog.json'
 import type { Category, Item } from './pricing'
@@ -50,7 +50,6 @@ export default function App() {
     ? CATALOG.flatMap((c) => c.items).find((i) => i.sku === modalSku) || null
     : null
   const modalCat = modalItem ? CATALOG.find((c) => c.id === modalItem.category) : undefined
-  const modalCatQty = modalCat ? categorySummary(cart, modalCat).qty : 0
 
   return (
     <div className="relative z-[1] min-h-screen">
@@ -109,7 +108,7 @@ export default function App() {
           </h1>
           <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-muted">
             Every style across all categories. Quantities update live, and volume pricing
-            applies per category (2 / 4 / 6% off at 10 / 20 / 30 pieces of that item).
+            applies per style (2 / 4 / 6% off once you buy 10 / 20 / 30 of the same one).
           </p>
         </div>
       )}
@@ -131,9 +130,12 @@ export default function App() {
               />
             ))}
           </div>
-          <p className="mt-10 text-center text-xs text-muted">
-            Prices from Everful Wholesale · selections saved to this browser · {CATALOG.reduce((a, c) => a + c.items.length, 0)} styles
-          </p>
+          <div className="mt-10 flex flex-col items-center gap-3 border-t border-line/60 pt-5">
+            <p className="text-center text-xs text-muted">
+              Prices from Everful Wholesale · selections saved to this browser · {CATALOG.reduce((a, c) => a + c.items.length, 0)} styles
+            </p>
+            <ResetButton qty={grand.qty} onReset={clear} />
+          </div>
         </main>
 
         {/* split cart pane */}
@@ -200,12 +202,47 @@ export default function App() {
       <DetailModal
         item={modalItem}
         category={modalCat}
-        catQty={modalCatQty}
         qty={modalItem ? cart[modalItem.sku] || 0 : 0}
         onQty={(n) => modalItem && setQty(modalItem.sku, n)}
         onClose={() => setModalSku(null)}
       />
     </div>
+  )
+}
+
+function ResetButton({ qty, onReset }: { qty: number; onReset: () => void }) {
+  const [arming, setArming] = useState(false)
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  useEffect(() => () => { if (timer.current) clearTimeout(timer.current) }, [])
+
+  const click = () => {
+    if (!arming) {
+      setArming(true)
+      timer.current = setTimeout(() => setArming(false), 3500)
+      return
+    }
+    if (timer.current) clearTimeout(timer.current)
+    setArming(false)
+    onReset()
+  }
+
+  return (
+    <button
+      onClick={click}
+      disabled={qty === 0 && !arming}
+      className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition-colors ${
+        arming
+          ? 'border-red-400 bg-red-50 text-red-600'
+          : 'border-line/70 bg-transparent text-muted/70 hover:border-red-300 hover:text-red-500 disabled:opacity-40 disabled:hover:border-line/70 disabled:hover:text-muted/70'
+      }`}
+      title="Wipe saved cart + view settings from this browser"
+    >
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none">
+        <path d="M2.5 4.5h11M6 4.5V3.2c0-.5.4-.9.9-.9h2.2c.5 0 .9.4.9.9V4.5M4 4.5l.6 8.3c0 .5.5.9 1 .9h4.8c.5 0 .9-.4 1-.9L13 4.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+      </svg>
+      {arming ? 'Click again to clear localStorage' : 'Clear localStorage'}
+    </button>
   )
 }
 

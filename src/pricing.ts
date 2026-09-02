@@ -56,17 +56,26 @@ export function catQty(cart: Cart, cat: Category) {
   return cat.items.reduce((s, it) => s + (cart[it.sku] || 0), 0)
 }
 
-// Per-category rollup: qty, active tier rate, subtotal, savings.
+// Discounts on Everful apply PER VARIANT: buying 10 of the same SKU unlocks the
+// tier for that SKU only. Mixing different styles does not pool toward a discount.
+export function itemUnit(item: Item, qtyOfSku: number) {
+  return unitPrice(item.price, tierFor(qtyOfSku).rate)
+}
+
+// Per-category rollup: total qty, subtotal, savings, and whether any line is discounted.
 export function categorySummary(cart: Cart, cat: Category) {
-  const qty = catQty(cart, cat)
-  const rate = tierFor(qty).rate
+  let qty = 0
   let subtotal = 0
   let saved = 0
+  let anyDiscount = false
   for (const it of cat.items) {
     const q = cart[it.sku] || 0
     if (!q) continue
-    subtotal += q * unitPrice(it.price, rate)
-    saved += q * (it.price - unitPrice(it.price, rate))
+    qty += q
+    const u = itemUnit(it, q)
+    subtotal += q * u
+    saved += q * (it.price - u)
+    if (u < it.price) anyDiscount = true
   }
-  return { qty, rate, subtotal, saved }
+  return { qty, subtotal, saved, anyDiscount }
 }
