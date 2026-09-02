@@ -7,12 +7,13 @@ import QtyStepper from './QtyStepper'
 type Props = {
   item: Item | null
   category: Category | undefined
+  href: string
   qty: number
   onQty: (n: number) => void
   onClose: () => void
 }
 
-export default function DetailModal({ item, category, qty, onQty, onClose }: Props) {
+export default function DetailModal({ item, category, href, qty, onQty, onClose }: Props) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose()
     window.addEventListener('keydown', onKey)
@@ -93,6 +94,18 @@ export default function DetailModal({ item, category, qty, onQty, onClose }: Pro
                   })}
                 </div>
               </div>
+
+              <a
+                href={href}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex w-fit items-center gap-1.5 text-sm font-medium text-clayDark underline-offset-2 transition-colors hover:text-clay hover:underline"
+              >
+                View this item on Everful Wholesale
+                <svg width="13" height="13" viewBox="0 0 16 16" fill="none" aria-hidden>
+                  <path d="M6 3.25H3.75c-.55 0-1 .45-1 1v8c0 .55.45 1 1 1h8c.55 0 1-.45 1-1V10M9.5 2.75h3.75V6.5M13 3L7.25 8.75" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </a>
 
               <div className="mt-auto flex items-center justify-between gap-3 pt-2">
                 <span className="text-sm text-muted">Quantity in cart</span>

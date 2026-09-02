@@ -202,6 +202,7 @@ export default function App() {
       <DetailModal
         item={modalItem}
         category={modalCat}
+        href={modalItem && modalCat ? `${modalCat.url}?variant=${modalItem.sku}` : '#'}
         qty={modalItem ? cart[modalItem.sku] || 0 : 0}
         onQty={(n) => modalItem && setQty(modalItem.sku, n)}
         onClose={() => setModalSku(null)}

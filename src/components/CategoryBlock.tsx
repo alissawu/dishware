@@ -93,6 +93,7 @@ export default function CategoryBlock({
                         qty={cart[it.sku] || 0}
                         unit={itemUnit(it, cart[it.sku] || 0)}
                         discounted={(cart[it.sku] || 0) >= 10}
+                        href={`${category.url}?variant=${it.sku}`}
                         compact
                         onQty={(n) => onQty(it.sku, n)}
                         onOpen={() => onOpen(it)}
@@ -158,6 +159,7 @@ export default function CategoryBlock({
                             qty={cart[it.sku] || 0}
                             unit={itemUnit(it, cart[it.sku] || 0)}
                             discounted={(cart[it.sku] || 0) >= 10}
+                            href={`${category.url}?variant=${it.sku}`}
                             onQty={(n) => onQty(it.sku, n)}
                             onOpen={() => onOpen(it)}
                           />
@@ -172,6 +174,7 @@ export default function CategoryBlock({
                             qty={cart[it.sku] || 0}
                             unit={itemUnit(it, cart[it.sku] || 0)}
                             discounted={(cart[it.sku] || 0) >= 10}
+                            href={`${category.url}?variant=${it.sku}`}
                             onQty={(n) => onQty(it.sku, n)}
                             onOpen={() => onOpen(it)}
                           />
