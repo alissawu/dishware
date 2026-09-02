@@ -10,6 +10,7 @@ export type Item = {
   price: number
   img: string
   imgFull: string
+  src: string
 }
 
 export type Category = {
