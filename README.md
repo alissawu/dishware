@@ -9,6 +9,7 @@ Live data scraped from the Everful product pages (image, style/series, color, ex
 - [Saucers](https://www.everfulwholesale.com/products/japanese-kiln-dish-ceramic-snack-dish-seasoning-dish-restaurant-hot-pot-sauce-dish-sushi-sauce-dish) — 6 styles
 - [Cutting Boards](https://www.everfulwholesale.com/products/ebony-wood-cutting-board-solid-wood-durable-for-chopping-and-cutting-home-use-wooden-chopping-board-sticky-cutting-board) — 33 styles (ebony wood + mini bamboo animal boards)
 - Mugs — 196 styles (fluted, retro patterned-handle, Japanese cup & saucer)
+- [Serving Trays](https://www.everfulwholesale.com/products/glam-classical-solid-color-porcelain-1-piece) — 4 styles (marble ceramic, small/large, with/without gold rim)
 
 ## Features
 
