@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 type Props = {
   value: number
   onChange: (n: number) => void
-  size?: 'sm' | 'md'
+  size?: 'nano' | 'xs' | 'sm' | 'md'
 }
 
 export default function QtyStepper({ value, onChange, size = 'md' }: Props) {
@@ -21,8 +21,14 @@ export default function QtyStepper({ value, onChange, size = 'md' }: Props) {
   }
 
   const active = value > 0
-  const pad = size === 'sm' ? 'h-8 w-8' : 'h-9 w-9'
-  const box = size === 'sm' ? 'h-8 w-11 text-sm' : 'h-9 w-12'
+  const dims =
+    size === 'nano'
+      ? { pad: 'h-5 w-5', box: 'h-5 w-5 text-[11px]', ic: 10 }
+      : size === 'xs'
+      ? { pad: 'h-6 w-6', box: 'h-6 w-8 text-xs', ic: 12 }
+      : size === 'sm'
+      ? { pad: 'h-8 w-8', box: 'h-8 w-11 text-sm', ic: 14 }
+      : { pad: 'h-9 w-9', box: 'h-9 w-12 text-base', ic: 14 }
 
   return (
     <div
@@ -35,10 +41,10 @@ export default function QtyStepper({ value, onChange, size = 'md' }: Props) {
         aria-label="Decrease"
         onClick={() => commit(String(value - 1))}
         disabled={value <= 0}
-        className={`${pad} grid place-items-center rounded-full text-ink/70 transition
+        className={`${dims.pad} grid place-items-center rounded-full text-ink/70 transition
           hover:bg-clay/10 hover:text-clayDark active:scale-90 disabled:opacity-30 disabled:hover:bg-transparent`}
       >
-        <svg width="14" height="14" viewBox="0 0 14 14"><path d="M2.5 7h9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg>
+        <svg width={dims.ic} height={dims.ic} viewBox="0 0 14 14"><path d="M2.5 7h9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg>
       </button>
       <input
         inputMode="numeric"
@@ -49,16 +55,16 @@ export default function QtyStepper({ value, onChange, size = 'md' }: Props) {
         onBlur={(e) => { focused.current = false; commit(e.target.value) }}
         onChange={(e) => setDraft(e.target.value.replace(/[^\d]/g, ''))}
         onKeyDown={(e) => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur() }}
-        className={`${box} bg-transparent text-center font-medium tabular-nums text-ink outline-none placeholder:text-muted/50`}
+        className={`${dims.box} bg-transparent text-center font-medium tabular-nums text-ink outline-none placeholder:text-muted/50`}
       />
       <button
         type="button"
         aria-label="Increase"
         onClick={() => commit(String(value + 1))}
-        className={`${pad} grid place-items-center rounded-full text-ink/70 transition
+        className={`${dims.pad} grid place-items-center rounded-full text-ink/70 transition
           hover:bg-clay/10 hover:text-clayDark active:scale-90`}
       >
-        <svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 2.5v9M2.5 7h9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg>
+        <svg width={dims.ic} height={dims.ic} viewBox="0 0 14 14"><path d="M7 2.5v9M2.5 7h9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg>
       </button>
     </div>
   )

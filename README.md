@@ -1,16 +1,25 @@
-# Everful Plate Picker
+# Everful Tableware Picker
 
-A fast, clean picker for ordering the [Everful vintage glazed ceramic plate set](https://www.everfulwholesale.com/products/elegant-glam-retro-solid-color-ceramics-tableware-1-piece) in bulk. All 38 styles, grouped by diameter, with live totals and automatic volume pricing.
+A fast, clean picker for ordering Everful ceramics in bulk — **plates, bowls, and saucers** — with one unified running total and live volume pricing. More categories drop in easily.
+
+Live data scraped from the Everful product pages (image, style/series, color, exact size, per-variant price):
+
+- [Plates](https://www.everfulwholesale.com/products/elegant-glam-retro-solid-color-ceramics-tableware-1-piece) — 38 styles
+- [Bowls](https://www.everfulwholesale.com/products/japanese-ceramic-retro-soup-bowl-salad-bowl-dishes-dish-bowl-ramen-bowl-large-soup-household-bowl) — 16 styles
+- [Saucers](https://www.everfulwholesale.com/products/japanese-kiln-dish-ceramic-snack-dish-seasoning-dish-restaurant-hot-pot-sauce-dish-sushi-sauce-dish) — 6 styles
 
 ## Features
 
-- **38 real variants** scraped from the Everful product page (image, style, series, color, exact size, per-variant price)
-- **Grouped by inch size** (9" → 11"), each group collapsible with its own count + subtotal
-- **Real tiered pricing** based on *total* cart quantity: list price, then 2% / 4% / 6% off at 10 / 20 / 30 pieces. Unit prices round up to the cent, matching Everful exactly
-- **Live totals** everywhere: per-plate, per-size, and a sticky grand-total bar with savings
-- **+/− steppers and direct numeric input** for every plate
-- **Cart saved to localStorage** so selections survive refreshes
-- Responsive, keyboard-friendly, no jank
+- **Unified cart across all categories.** One grand total, savings, and piece count spanning plates, bowls and saucers. Filter by category with chips, or view All.
+- **Three view densities** (Gmail-style toggle):
+  - *Comfortable* — big cards, collapsible size groups.
+  - *Compact* — newspaper-column layout that packs every size group and style onto the screen at a glance, tiny cards with inline steppers.
+  - *List* — thin scannable rows with thumbnail, size, price, qty and line total.
+- **Detail modal** — click any product photo for a large image, full specs, SKU, and a per-tier price ladder.
+- **Split-screen** (desktop) — browse on the left, a live full cart on the right with pics, per-category subtotals, and the grand total. A slide-over cart drawer covers mobile.
+- **Real tiered pricing.** Everful bills each product separately, so the discount tier (2% / 4% / 6% off at 10 / 20 / 30 pieces) is computed **per category** based on that category's own quantity, then rolled up. Unit prices round up to the cent to match the site exactly.
+- **Everything persists to localStorage** — cart, view density, split state, active category, and which groups are collapsed.
+- Responsive, keyboard-friendly (Esc closes modal/drawer), no jank.
 
 ## Stack
 
@@ -27,9 +36,9 @@ npm run preview  # preview the build
 
 ## Data
 
-Plate data lives in `src/plates.json` (38 entries). Pricing math is in `src/pricing.ts`.
+Catalog lives in `src/catalog.json` (categories → items). Pricing math is in `src/pricing.ts`.
+Adding a new category is just another entry in the catalog with its scraped items.
 Images are served from Everful's CDN (`cdn.everfulwholesale.com`).
 
-> Note: per-variant base prices range from $2.73 to $6.29 — the original brief mentioned a
-> single $4.10 tier, but the live page prices each variant individually, so those real prices
-> are used here.
+> Note on prices: variants are priced individually (plates $2.73–$6.29, bowls $2.14–$4.93,
+> saucers $1.10–$1.23), taken live from each product page rather than a single flat rate.

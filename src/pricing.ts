@@ -1,6 +1,8 @@
-export type Plate = {
+export type Item = {
   sku: string
-  inch: string
+  category: string
+  group: string
+  groupLabel: string
   dims: string
   name: string
   series: string
@@ -10,12 +12,20 @@ export type Plate = {
   imgFull: string
 }
 
+export type Category = {
+  id: string
+  label: string
+  url: string
+  groupType: 'size' | 'shape'
+  items: Item[]
+}
+
 export type Cart = Record<string, number>
 
-// Volume tiers from Everful: discount % applied to each unit price,
-// based on TOTAL cart quantity, rounded UP to the cent (matches the site).
 export type Tier = { min: number; rate: number; label: string }
 
+// Volume tiers from Everful. On Everful each PRODUCT is billed separately, so
+// the discount % is driven by that category's own quantity — not the whole cart.
 export const TIERS: Tier[] = [
   { min: 0, rate: 0, label: '0–9 pcs' },
   { min: 10, rate: 2, label: '10–19 pcs' },
@@ -23,21 +33,40 @@ export const TIERS: Tier[] = [
   { min: 30, rate: 6, label: '30+ pcs' },
 ]
 
-export function tierFor(totalQty: number): Tier {
+export function tierFor(qty: number): Tier {
   let t = TIERS[0]
-  for (const tier of TIERS) if (totalQty >= tier.min) t = tier
+  for (const tier of TIERS) if (qty >= tier.min) t = tier
   return t
 }
 
-export function unitPrice(base: number, rate: number) {
-  // ceil to the cent, e.g. 2.73 * 0.96 = 2.6208 -> 2.63
-  return Math.ceil(base * (1 - rate / 100) * 100) / 100
+export function nextTier(qty: number): Tier | undefined {
+  return TIERS.find((t) => t.min > qty)
 }
 
-export function totalQty(cart: Cart) {
-  return Object.values(cart).reduce((a, b) => a + (b || 0), 0)
+export function unitPrice(base: number, rate: number) {
+  // ceil to the cent, matches Everful (e.g. 2.73 * 0.96 = 2.6208 -> 2.63)
+  return Math.ceil(base * (1 - rate / 100) * 100) / 100
 }
 
 export function money(n: number) {
   return '$' + n.toFixed(2)
+}
+
+export function catQty(cart: Cart, cat: Category) {
+  return cat.items.reduce((s, it) => s + (cart[it.sku] || 0), 0)
+}
+
+// Per-category rollup: qty, active tier rate, subtotal, savings.
+export function categorySummary(cart: Cart, cat: Category) {
+  const qty = catQty(cart, cat)
+  const rate = tierFor(qty).rate
+  let subtotal = 0
+  let saved = 0
+  for (const it of cat.items) {
+    const q = cart[it.sku] || 0
+    if (!q) continue
+    subtotal += q * unitPrice(it.price, rate)
+    saved += q * (it.price - unitPrice(it.price, rate))
+  }
+  return { qty, rate, subtotal, saved }
 }
