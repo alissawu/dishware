@@ -40,13 +40,12 @@ export default function CategoryBlock({
   return (
     <section id={`cat-${category.id}`} className="scroll-mt-24">
       {/* category banner */}
-      <div className={`flex items-center gap-3 border-b border-clay/25 ${density === 'compact' ? 'mb-1.5 pb-1' : 'mb-3 pb-2'}`}>
-        <h2 className={`font-display text-ink ${density === 'compact' ? 'text-lg' : 'text-2xl'}`}>{category.label}</h2>
+      <div className={`flex items-baseline gap-3 border-b border-line ${density === 'compact' ? 'mb-1.5 pb-1' : 'mb-5 pb-2.5'}`}>
+        <h2 className={`font-display font-normal text-ink ${density === 'compact' ? 'text-lg' : 'text-2xl'}`}>{category.label}</h2>
         <span className="text-xs text-muted">{category.items.length} styles</span>
         <div className="ml-auto flex items-center gap-3">
           {sum.qty > 0 && (
             <span className="flex items-center gap-2 text-sm">
-              {sum.anyDiscount && <span className="rounded-full bg-clay/10 px-2 py-0.5 text-xs font-medium text-clayDark">volume price</span>}
               <span className="text-muted">{sum.qty} in cart</span>
               <span className="font-display text-base text-clayDark">{money(sum.subtotal)}</span>
             </span>
@@ -54,7 +53,7 @@ export default function CategoryBlock({
           {canToggle && (
             <button
               onClick={() => onToggleGroups(groupKeys, !allCollapsed)}
-              className="flex flex-none items-center gap-1 whitespace-nowrap text-xs font-medium text-clayDark underline-offset-4 hover:underline"
+              className="flex flex-none items-center gap-1 whitespace-nowrap text-xs text-muted underline-offset-4 transition-colors hover:text-ink"
               title={allCollapsed ? 'Expand all size groups' : 'Collapse all size groups'}
             >
               <svg width="11" height="11" viewBox="0 0 18 18" className={`transition-transform ${allCollapsed ? '-rotate-90' : ''}`}>
@@ -125,38 +124,28 @@ export default function CategoryBlock({
 
           return (
             <div key={key}>
-              {/* group header */}
+              {/* group header — quiet text label */}
               <button
                 onClick={() => onToggleGroup(key)}
-                className={`group flex w-full items-center gap-2.5 rounded-lg border border-line bg-card/70 text-left transition-colors hover:border-clay/40 ${
-                  density === 'comfortable' ? 'px-3 py-2.5' : 'px-3 py-1.5'
+                className={`group flex w-full items-baseline gap-2 text-left ${
+                  density === 'comfortable' ? 'py-1.5' : 'py-1'
                 }`}
               >
-                <span className={`flex flex-none items-center justify-center rounded-full border border-clay/30 bg-clay/[0.07] font-display font-semibold text-clayDark ${
-                  density === 'comfortable' ? 'h-9 w-9 text-sm' : 'h-7 w-7 text-xs'
-                }`}>
-                  {category.groupType === 'size' ? group : label.charAt(0)}
-                </span>
-                <div className="min-w-0 flex-1">
-                  <h3 className={`font-display text-ink ${density === 'comfortable' ? 'text-base' : 'text-sm'}`}>
-                    {category.groupType === 'size' ? `${group} inch` : label}
-                  </h3>
-                  {density === 'comfortable' && (
-                    <p className="text-xs text-muted">
-                      {items.length} {items.length === 1 ? 'style' : 'styles'}
-                      {category.groupType === 'size' && items[0].dims && ` · ${items[0].dims.split('x')[0].trim()} across`}
-                    </p>
-                  )}
-                </div>
-                {gCount > 0 && (
-                  <span className="text-right text-xs">
-                    <span className="mr-2 rounded-full bg-clay px-1.5 py-0.5 font-semibold text-paper">{gCount}</span>
-                    <span className="font-display text-sm text-clayDark">{money(gSub)}</span>
-                  </span>
-                )}
-                <svg width="16" height="16" viewBox="0 0 18 18" className={`flex-none text-muted transition-transform ${isCollapsed ? '-rotate-90' : ''}`}>
+                <svg width="12" height="12" viewBox="0 0 18 18" className={`flex-none self-center text-muted/70 transition-transform ${isCollapsed ? '-rotate-90' : ''}`}>
                   <path d="M4 6.5L9 11.5L14 6.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
+                <h3 className={`font-display font-normal text-ink ${density === 'comfortable' ? 'text-[15px]' : 'text-sm'}`}>
+                  {category.groupType === 'size' ? `${group} inch` : label}
+                </h3>
+                <span className="text-xs text-muted">
+                  {items.length}
+                  {density === 'comfortable' && category.groupType === 'size' && items[0].dims && ` · ${items[0].dims.split('x')[0].trim()}`}
+                </span>
+                {gCount > 0 && (
+                  <span className="ml-auto text-xs text-muted">
+                    {gCount} in cart · <span className="text-clayDark">{money(gSub)}</span>
+                  </span>
+                )}
               </button>
 
               <AnimatePresence initial={false}>
@@ -184,7 +173,7 @@ export default function CategoryBlock({
                         ))}
                       </div>
                     ) : (
-                      <div className="grid grid-cols-2 gap-3 pt-3 sm:grid-cols-3 lg:grid-cols-4">
+                      <div className="grid grid-cols-2 gap-x-4 gap-y-7 pb-2 pt-4 sm:grid-cols-3 sm:gap-x-6 sm:gap-y-9 lg:grid-cols-4">
                         {items.map((it) => (
                           <ProductCard
                             key={it.sku}

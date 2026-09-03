@@ -80,50 +80,43 @@ function ProductCardBase({ item, qty, unit, discounted, href, compact, onQty, on
       tabIndex={0}
       onClick={onOpen}
       onKeyDown={openKey}
-      className={`group relative flex cursor-pointer flex-col overflow-hidden rounded-2xl border bg-card transition-all duration-300
-        ${active ? 'border-clay/45 shadow-lift' : 'border-line shadow-soft hover:-translate-y-0.5 hover:shadow-lift'}`}
+      className="group relative flex cursor-pointer flex-col"
     >
-      {active && (
-        <div className="absolute right-3 top-3 z-10 grid h-7 min-w-[1.75rem] place-items-center rounded-full bg-clay px-1.5 text-xs font-semibold leading-none tabular-nums text-paper shadow-soft">
-          {qty}
-        </div>
-      )}
-      <div className="relative aspect-[4/3] overflow-hidden bg-[#efe8db] sm:aspect-square">
+      <div className={`relative aspect-[4/3] overflow-hidden rounded-lg bg-[#f6f3ec] shadow-[0_4px_18px_-12px_rgba(51,48,42,0.30)] transition-shadow duration-500 group-hover:shadow-[0_10px_30px_-14px_rgba(51,48,42,0.40)] sm:aspect-square ${
+        active ? 'ring-1 ring-clay/35' : ''
+      }`}>
         <img
           src={item.img}
           alt={`${item.name} — ${item.color}`}
           loading="lazy"
           decoding="async"
-          className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+          className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.03]"
         />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/10 to-transparent" />
-        <span className="pointer-events-none absolute left-3 bottom-3 rounded-full bg-paper/85 px-2 py-0.5 text-[11px] font-medium text-ink opacity-0 backdrop-blur-sm transition-opacity group-hover:opacity-100">
-          View details
-        </span>
+        {active && (
+          <div className="absolute right-2.5 top-2.5 grid h-6 min-w-[1.5rem] place-items-center rounded-full bg-ink/80 px-1.5 text-[11px] font-medium leading-none tabular-nums text-paper backdrop-blur-sm">
+            {qty}
+          </div>
+        )}
       </div>
 
-      <div className="flex flex-1 flex-col gap-2 p-3 sm:p-3.5">
+      <div className="flex flex-1 flex-col px-0.5 pt-2.5">
         <div className="flex items-start justify-between gap-2">
-          <h3 className="font-display text-sm leading-tight text-ink sm:text-[15px]">{item.name}</h3>
-          <ExternalLink href={href} className="mt-0.5 shrink-0" />
+          <h3 className="font-display text-sm font-normal leading-snug text-ink sm:text-[15px]">{item.name}</h3>
+          <ExternalLink href={href} className="mt-0.5 shrink-0 opacity-0 transition-opacity group-hover:opacity-100" />
         </div>
-        <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted">
-          <span className="inline-flex items-center gap-1 rounded-full bg-ink/[0.04] px-2 py-0.5 font-medium text-ink/70">
-            {item.color}
-          </span>
-          {item.series && <span className="italic">{item.series}</span>}
-        </div>
-        {item.dims && item.dims !== item.color && <p className="text-xs text-muted">{item.dims}</p>}
+        <p className="mt-0.5 truncate text-xs text-muted">
+          {item.color}{item.series ? ` · ${item.series}` : ''}
+        </p>
 
-        <div className="mt-auto flex flex-col gap-2 pt-2">
+        <div className="mt-2.5 flex flex-col gap-2">
           <div className="flex items-baseline gap-1.5 leading-none">
             {discounted ? (
               <>
-                <span className="font-display text-lg text-clayDark">{money(unit)}</span>
-                <span className="text-xs text-muted line-through">{money(item.price)}</span>
+                <span className="text-sm font-medium text-ink">{money(unit)}</span>
+                <span className="text-[11px] text-muted line-through">{money(item.price)}</span>
               </>
             ) : (
-              <span className="font-display text-lg text-ink">{money(unit)}</span>
+              <span className="text-sm font-medium text-ink">{money(unit)}</span>
             )}
             <span className="text-[11px] text-muted">/ea</span>
           </div>

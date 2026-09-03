@@ -16,13 +16,13 @@ export default {
         sans: ['"Instrument Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
       colors: {
-        paper: '#f3ede1',
+        paper: '#f6f3ec',
         clay: '#5c7183',
         clayDark: '#455767',
-        ink: '#332e27',
-        muted: '#8f8574',
-        line: '#e6ddcd',
-        card: '#faf6ed',
+        ink: '#33302a',
+        muted: '#978d7e',
+        line: '#ece6da',
+        card: '#fbf9f4',
       },
       boxShadow: {
         soft: '0 1px 2px rgba(52,48,42,0.03), 0 6px 20px -14px rgba(52,48,42,0.10)',
