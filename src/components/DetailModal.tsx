@@ -31,7 +31,7 @@ export default function DetailModal({ item, category, href, qty, onQty, onClose 
         >
           <div className="absolute inset-0 bg-ink/50 backdrop-blur-sm" onClick={onClose} />
           <motion.div
-            className="relative z-10 flex w-full max-w-3xl flex-col overflow-hidden rounded-t-3xl bg-paper shadow-lift sm:rounded-3xl md:flex-row"
+            className="relative z-10 flex max-h-[92dvh] w-full max-w-3xl flex-col overflow-hidden rounded-t-3xl bg-paper shadow-lift sm:max-h-[88vh] sm:rounded-3xl md:flex-row"
             initial={{ y: 40, scale: 0.98, opacity: 0 }}
             animate={{ y: 0, scale: 1, opacity: 1 }}
             exit={{ y: 40, scale: 0.98, opacity: 0 }}
@@ -40,16 +40,16 @@ export default function DetailModal({ item, category, href, qty, onQty, onClose 
             <button
               onClick={onClose}
               aria-label="Close"
-              className="absolute right-3 top-3 z-20 grid h-9 w-9 place-items-center rounded-full bg-paper/80 text-ink shadow-soft backdrop-blur transition hover:bg-white"
+              className="absolute right-3 top-3 z-20 grid h-10 w-10 place-items-center rounded-full bg-paper/90 text-ink shadow-soft backdrop-blur transition hover:bg-white"
             >
-              <svg width="16" height="16" viewBox="0 0 16 16"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg>
+              <svg width="17" height="17" viewBox="0 0 16 16"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round"/></svg>
             </button>
 
-            <div className="relative aspect-square w-full flex-none bg-[#efe8db] md:w-1/2">
-              <img src={item.imgFull} alt={`${item.name} — ${item.color}`} className="h-full w-full object-cover" />
+            <div className="relative h-52 w-full flex-none bg-[#efe8db] sm:h-64 md:h-auto md:aspect-square md:w-1/2">
+              <img src={item.imgFull} alt={`${item.name} — ${item.color}`} className="h-full w-full object-contain md:object-cover" />
             </div>
 
-            <div className="flex flex-1 flex-col gap-4 overflow-y-auto p-6">
+            <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-5 pt-6 sm:p-6">
               <div>
                 <p className="text-xs font-medium uppercase tracking-[0.16em] text-clay">
                   {category?.label} · {item.groupLabel}

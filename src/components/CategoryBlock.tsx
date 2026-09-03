@@ -67,7 +67,7 @@ export default function CategoryBlock({
 
       <div className={
         density === 'comfortable' ? 'flex flex-col gap-4'
-        : density === 'compact' ? 'gap-3 [column-fill:balance] columns-2 lg:columns-3 xl:columns-4 [&>*]:mb-3 [&>*]:break-inside-avoid'
+        : density === 'compact' ? 'gap-3 [column-fill:balance] columns-1 sm:columns-2 lg:columns-3 xl:columns-4 [&>*]:mb-3 [&>*]:break-inside-avoid'
         : 'flex flex-col gap-3'
       }>
         {groups.map(({ group, label, items }) => {
@@ -102,7 +102,7 @@ export default function CategoryBlock({
                   )}
                 </button>
                 {!isCollapsed && (
-                  <div className="grid grid-cols-3 gap-1.5">
+                  <div className="grid grid-cols-3 gap-2">
                     {items.map((it) => (
                       <ProductCard
                         key={it.sku}

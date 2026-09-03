@@ -24,15 +24,15 @@ export default function QtyStepper({ value, onChange, size = 'md', block }: Prop
   const active = value > 0
   const dims =
     size === 'nano'
-      ? { pad: 'h-5 w-5', box: 'h-5 w-5 text-[11px]', ic: 10 }
+      ? { pad: 'h-6 w-6', box: 'h-6 w-6 text-[11px]', ic: 11 }
       : size === 'xs'
-      ? { pad: 'h-6 w-6', box: 'h-6 w-8 text-xs', ic: 12 }
+      ? { pad: 'h-7 w-7', box: 'h-7 w-8 text-xs', ic: 12 }
       : size === 'sm'
-      ? { pad: 'h-8 w-8', box: 'h-8 w-11 text-sm', ic: 14 }
-      : { pad: 'h-9 w-9', box: 'h-9 w-12 text-base', ic: 14 }
+      ? { pad: 'h-9 w-9', box: 'h-9 w-11 text-sm', ic: 14 }
+      : { pad: 'h-10 w-10', box: 'h-10 w-12 text-base', ic: 15 }
 
   const boxCls = block
-    ? `flex-1 min-w-0 ${size === 'md' ? 'h-9 text-base' : 'h-8 text-sm'}`
+    ? `flex-1 min-w-0 ${size === 'md' ? 'h-10 text-base' : 'h-9 text-sm'}`
     : dims.box
 
   return (

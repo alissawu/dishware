@@ -56,6 +56,14 @@ export default function App() {
     return () => { document.body.style.overflow = '' }
   }, [drawer, modalSku])
 
+  // Escape closes the cart drawer.
+  useEffect(() => {
+    if (!drawer) return
+    const onEsc = (e: KeyboardEvent) => e.key === 'Escape' && setDrawer(false)
+    window.addEventListener('keydown', onEsc)
+    return () => window.removeEventListener('keydown', onEsc)
+  }, [drawer])
+
   return (
     <div className="relative z-[1] min-h-screen">
       {/* header */}
@@ -106,10 +114,6 @@ export default function App() {
           <h1 className="max-w-2xl font-display text-3xl leading-[1.08] text-ink sm:text-5xl sm:leading-[1.05]">
             Plates, bowls &amp; saucers,<span className="hidden sm:inline"><br /></span> one running total.
           </h1>
-          <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted sm:mt-4 sm:text-[15px]">
-            Every style across all categories. Quantities update live, and volume pricing
-            applies per style (2 / 4 / 6% off once you buy 10 / 20 / 30 of the same one).
-          </p>
         </div>
       )}
 

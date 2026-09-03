@@ -8,13 +8,13 @@ type Props = {
   onSelect: (id: string) => void
 }
 
-function Count({ n, muted }: { n: number; muted?: boolean }) {
+function Count({ n, variant = 'accent' }: { n: number; variant?: 'accent' | 'muted' | 'onDark' }) {
+  const cls =
+    variant === 'onDark' ? 'bg-paper/20 text-paper'
+    : variant === 'muted' ? 'bg-ink/[0.08] text-ink/70'
+    : 'bg-clay text-paper'
   return (
-    <span
-      className={`grid h-[1.05rem] min-w-[1.05rem] place-items-center rounded-full px-1 text-[10px] font-semibold leading-none tabular-nums ${
-        muted ? 'bg-ink/8 text-ink/70' : 'bg-clay text-paper'
-      }`}
-    >
+    <span className={`grid h-[1.05rem] min-w-[1.05rem] place-items-center rounded-full px-1 text-[10px] font-semibold leading-none tabular-nums ${cls}`}>
       {n}
     </span>
   )
@@ -49,10 +49,11 @@ export default function CategoryNav({ categories, active, countFor, onSelect }: 
           onClick={() => setOpen((o) => !o)}
           aria-haspopup="listbox"
           aria-expanded={open}
-          className="flex w-full items-center justify-between gap-2 rounded-full border border-line bg-card px-4 py-2.5 text-sm text-ink transition-colors"
+          className="flex w-full items-center justify-between gap-2 rounded-full border border-ink/15 bg-white px-4 py-3 text-sm text-ink shadow-sm transition-colors active:bg-ink/[0.03]"
         >
           <span className="flex items-center gap-2">
-            <span className="font-medium">{current.label}</span>
+            <svg width="15" height="15" viewBox="0 0 16 16" className="text-muted" aria-hidden><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/></svg>
+            <span className="font-semibold">{current.label}</span>
             {countFor(current.id) > 0 && <Count n={countFor(current.id)} />}
           </span>
           <svg
@@ -65,7 +66,7 @@ export default function CategoryNav({ categories, active, countFor, onSelect }: 
         {open && (
           <div
             role="listbox"
-            className="absolute left-0 right-0 top-full z-40 mt-2 max-h-[62vh] overflow-auto rounded-2xl border border-line bg-card p-1.5 shadow-lift"
+            className="absolute left-0 right-0 top-full z-40 mt-2 max-h-[62vh] overflow-auto rounded-2xl border border-ink/15 bg-white p-1.5 shadow-lift"
           >
             {items.map((it) => {
               const q = countFor(it.id)
@@ -76,12 +77,12 @@ export default function CategoryNav({ categories, active, countFor, onSelect }: 
                   role="option"
                   aria-selected={sel}
                   onClick={() => { onSelect(it.id); setOpen(false) }}
-                  className={`flex w-full items-center justify-between gap-2 rounded-xl px-3.5 py-2.5 text-sm transition-colors ${
-                    sel ? 'bg-ink/[0.06] font-medium text-ink' : 'text-ink/80 hover:bg-ink/[0.03]'
+                  className={`flex w-full items-center justify-between gap-2 rounded-xl px-3.5 py-3 text-sm transition-colors ${
+                    sel ? 'bg-ink font-medium text-paper' : 'text-ink/80 active:bg-ink/[0.04]'
                   }`}
                 >
                   <span>{it.label}</span>
-                  {q > 0 && <Count n={q} muted={sel} />}
+                  {q > 0 && <Count n={q} variant={sel ? 'onDark' : 'muted'} />}
                 </button>
               )
             })}
@@ -98,8 +99,8 @@ export default function CategoryNav({ categories, active, countFor, onSelect }: 
             <button
               key={it.id}
               onClick={() => onSelect(it.id)}
-              className={`flex flex-none items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm transition-colors ${
-                sel ? 'border-ink bg-ink text-paper' : 'border-line bg-card text-ink hover:border-clay/40'
+              className={`flex flex-none items-center gap-1.5 rounded-full border px-4 py-2 text-sm transition-colors ${
+                sel ? 'border-ink bg-ink font-medium text-paper' : 'border-ink/15 bg-white text-ink hover:border-ink/40'
               }`}
             >
               {it.label}

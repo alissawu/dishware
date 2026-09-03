@@ -67,8 +67,8 @@ function ProductCardBase({ item, qty, unit, discounted, href, compact, onQty, on
             </span>
           )}
         </div>
-        <div className="flex items-center justify-center py-0.5" onClick={stop} onKeyDown={stop}>
-          <QtyStepper value={qty} onChange={onQty} size="nano" />
+        <div className="flex items-center justify-center py-1" onClick={stop} onKeyDown={stop}>
+          <QtyStepper value={qty} onChange={onQty} size="xs" />
         </div>
       </div>
     )
@@ -121,7 +121,7 @@ function ProductCardBase({ item, qty, unit, discounted, href, compact, onQty, on
             <span className="text-[11px] text-muted">/ea</span>
           </div>
           <div onClick={stop} onKeyDown={stop}>
-            <QtyStepper value={qty} onChange={onQty} size="sm" block />
+            <QtyStepper value={qty} onChange={onQty} size="md" block />
           </div>
         </div>
       </div>
