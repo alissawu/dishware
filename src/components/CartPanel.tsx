@@ -64,7 +64,16 @@ export default function CartPanel({ categories, cart, onQty, onOpen, onClear, co
                           <img src={it.img} alt={it.color} loading="lazy" className="h-full w-full object-cover" />
                         </button>
                         <div className="min-w-0 flex-1">
-                          <div className="truncate text-xs font-medium text-ink">{it.name}</div>
+                          <a
+                            href={`${it.src}?variant=${it.sku}`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="group/link inline-flex max-w-full items-center gap-1 text-xs font-medium text-ink hover:text-clayDark"
+                            title="View this item on Everful Wholesale"
+                          >
+                            <span className="truncate underline-offset-2 group-hover/link:underline">{it.name}</span>
+                            <svg className="h-3 w-3 flex-none opacity-40 group-hover/link:opacity-100" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M14 5h5v5M19 5l-8 8M18 13v5a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                          </a>
                           <div className="truncate text-[11px] text-muted">{it.color} · {it.groupLabel} · {money(u)} ea</div>
                         </div>
                         <div className="flex flex-none items-center gap-1">
