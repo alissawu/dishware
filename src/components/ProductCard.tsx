@@ -62,7 +62,7 @@ function ProductCardBase({ item, qty, unit, discounted, href, compact, onQty, on
             {money(unit)}
           </span>
           {active && (
-            <span className="absolute right-0.5 top-0.5 grid h-4 min-w-4 place-items-center rounded-full bg-clay px-0.5 text-[9px] font-bold text-paper">
+            <span className="absolute right-0.5 top-0.5 grid h-4 min-w-[1rem] place-items-center rounded-full bg-clay px-0.5 text-[9px] font-bold leading-none tabular-nums text-paper">
               {qty}
             </span>
           )}
@@ -84,7 +84,7 @@ function ProductCardBase({ item, qty, unit, discounted, href, compact, onQty, on
         ${active ? 'border-clay/45 shadow-lift' : 'border-line shadow-soft hover:-translate-y-0.5 hover:shadow-lift'}`}
     >
       {active && (
-        <div className="absolute right-3 top-3 z-10 grid h-7 min-w-7 place-items-center rounded-full bg-clay px-2 text-xs font-semibold text-paper shadow">
+        <div className="absolute right-3 top-3 z-10 grid h-7 min-w-[1.75rem] place-items-center rounded-full bg-clay px-1.5 text-xs font-semibold leading-none tabular-nums text-paper shadow-soft">
           {qty}
         </div>
       )}

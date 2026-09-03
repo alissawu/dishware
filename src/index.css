@@ -10,11 +10,11 @@ html { scroll-behavior: smooth; }
 
 body {
   margin: 0;
-  background-color: #f4efe6;
+  background-color: #f2eee5;
   background-image:
-    radial-gradient(1200px 600px at 85% -10%, rgba(182,97,59,0.08), transparent 60%),
-    radial-gradient(900px 500px at -10% 110%, rgba(140,120,90,0.10), transparent 55%);
-  color: #2c2620;
+    radial-gradient(1100px 620px at 88% -12%, rgba(156,116,87,0.045), transparent 62%),
+    radial-gradient(900px 520px at -12% 112%, rgba(120,112,94,0.05), transparent 58%);
+  color: #34302a;
   font-family: 'Instrument Sans', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -24,7 +24,7 @@ body {
 body::before {
   content: "";
   position: fixed; inset: 0; z-index: 0; pointer-events: none;
-  opacity: 0.35;
+  opacity: 0.22;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
   mix-blend-mode: multiply;
 }
@@ -34,8 +34,8 @@ input[type=number]::-webkit-outer-spin-button,
 input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 input[type=number] { -moz-appearance: textfield; }
 
-::selection { background: #b6613b; color: #f4efe6; }
+::selection { background: #9c7457; color: #f2eee5; }
 
 /* thin scrollbar */
 *::-webkit-scrollbar { width: 10px; height: 10px; }
-*::-webkit-scrollbar-thumb { background: #d8cfbf; border-radius: 999px; border: 3px solid #f4efe6; }
+*::-webkit-scrollbar-thumb { background: #dcd4c5; border-radius: 999px; border: 3px solid #f2eee5; }

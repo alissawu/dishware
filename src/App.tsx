@@ -5,6 +5,7 @@ import type { Category, Item } from './pricing'
 import { categorySummary, money } from './pricing'
 import { useCart, usePersisted, type SyncState } from './store'
 import CategoryBlock from './components/CategoryBlock'
+import CategoryNav from './components/CategoryNav'
 import CartPanel from './components/CartPanel'
 import DetailModal from './components/DetailModal'
 
@@ -31,6 +32,9 @@ export default function App() {
     }
     return { sum, saved, qty }
   }, [cart])
+
+  const countFor = (id: string) =>
+    id === 'all' ? grand.qty : categorySummary(cart, CATALOG.find((c) => c.id === id)!).qty
 
   const toggleGroup = (key: string) =>
     setCollapsedArr((arr) => (arr.includes(key) ? arr.filter((k) => k !== key) : [...arr, key]))
@@ -83,19 +87,15 @@ export default function App() {
               <svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" strokeWidth="1.3"/><circle cx="8" cy="8" r="2.4" fill="none" stroke="currentColor" strokeWidth="1.3"/></svg>
               <span className="tabular-nums">{money(grand.sum)}</span>
               {grand.qty > 0 && (
-                <span className="grid h-4 min-w-4 place-items-center rounded-full bg-clay px-1 text-[10px] font-semibold">{grand.qty}</span>
+                <span className="grid h-[1.15rem] min-w-[1.15rem] place-items-center rounded-full bg-clay px-1 text-[10px] font-semibold leading-none tabular-nums">{grand.qty}</span>
               )}
             </button>
           </div>
         </div>
 
-        {/* category chips + controls */}
-        <div className="mx-auto flex max-w-[1600px] items-center gap-2 overflow-x-auto px-4 pb-2 sm:px-6">
-          <Chip label="All" count={grand.qty} activeChip={active === 'all'} onClick={() => setActive('all')} />
-          {CATALOG.map((c) => {
-            const q = categorySummary(cart, c).qty
-            return <Chip key={c.id} label={c.label} count={q} activeChip={active === c.id} onClick={() => setActive(c.id)} />
-          })}
+        {/* category selector: dropdown on mobile, chips on desktop */}
+        <div className="mx-auto max-w-[1600px] px-4 pb-2.5 sm:px-6">
+          <CategoryNav categories={CATALOG} active={active} countFor={countFor} onSelect={setActive} />
         </div>
       </header>
 
@@ -304,24 +304,6 @@ function ResetButton({ qty, onReset }: { qty: number; onReset: () => void }) {
         <path d="M2.5 4.5h11M6 4.5V3.2c0-.5.4-.9.9-.9h2.2c.5 0 .9.4.9.9V4.5M4 4.5l.6 8.3c0 .5.5.9 1 .9h4.8c.5 0 .9-.4 1-.9L13 4.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
       </svg>
       {arming ? 'Click again to clear localStorage' : 'Clear localStorage'}
-    </button>
-  )
-}
-
-function Chip({ label, count, activeChip, onClick }: { label: string; count: number; activeChip: boolean; onClick: () => void }) {
-  return (
-    <button
-      onClick={onClick}
-      className={`flex flex-none items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm transition-colors ${
-        activeChip ? 'border-clay bg-clay text-paper' : 'border-line bg-card text-ink hover:border-clay/40'
-      }`}
-    >
-      {label}
-      {count > 0 && (
-        <span className={`grid h-4 min-w-4 place-items-center rounded-full px-1 text-[10px] font-semibold ${activeChip ? 'bg-paper/25 text-paper' : 'bg-clay text-paper'}`}>
-          {count}
-        </span>
-      )}
     </button>
   )
 }
