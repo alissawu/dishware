@@ -12,6 +12,7 @@ type Props = {
   density: Density
   collapsed: Set<string>
   onToggleGroup: (key: string) => void
+  onToggleGroups: (keys: string[], collapse: boolean) => void
   onQty: (sku: string, n: number) => void
   onOpen: (item: Item) => void
 }
@@ -28,10 +29,13 @@ function groupItems(cat: Category) {
 }
 
 export default function CategoryBlock({
-  category, cart, density, collapsed, onToggleGroup, onQty, onOpen,
+  category, cart, density, collapsed, onToggleGroup, onToggleGroups, onQty, onOpen,
 }: Props) {
   const groups = groupItems(category)
   const sum = categorySummary(cart, category)
+  const groupKeys = groups.map((g) => `${category.id}:${g.group}`)
+  const allCollapsed = groupKeys.length > 0 && groupKeys.every((k) => collapsed.has(k))
+  const canToggle = groups.length > 1
 
   return (
     <section id={`cat-${category.id}`} className="scroll-mt-24">
@@ -39,13 +43,27 @@ export default function CategoryBlock({
       <div className={`flex items-center gap-3 border-b border-clay/25 ${density === 'compact' ? 'mb-1.5 pb-1' : 'mb-3 pb-2'}`}>
         <h2 className={`font-display text-ink ${density === 'compact' ? 'text-lg' : 'text-2xl'}`}>{category.label}</h2>
         <span className="text-xs text-muted">{category.items.length} styles</span>
-        {sum.qty > 0 && (
-          <span className="ml-auto flex items-center gap-2 text-sm">
-            {sum.anyDiscount && <span className="rounded-full bg-clay/10 px-2 py-0.5 text-xs font-medium text-clayDark">volume price</span>}
-            <span className="text-muted">{sum.qty} in cart</span>
-            <span className="font-display text-base text-clayDark">{money(sum.subtotal)}</span>
-          </span>
-        )}
+        <div className="ml-auto flex items-center gap-3">
+          {sum.qty > 0 && (
+            <span className="flex items-center gap-2 text-sm">
+              {sum.anyDiscount && <span className="rounded-full bg-clay/10 px-2 py-0.5 text-xs font-medium text-clayDark">volume price</span>}
+              <span className="text-muted">{sum.qty} in cart</span>
+              <span className="font-display text-base text-clayDark">{money(sum.subtotal)}</span>
+            </span>
+          )}
+          {canToggle && (
+            <button
+              onClick={() => onToggleGroups(groupKeys, !allCollapsed)}
+              className="flex flex-none items-center gap-1 whitespace-nowrap text-xs font-medium text-clayDark underline-offset-4 hover:underline"
+              title={allCollapsed ? 'Expand all size groups' : 'Collapse all size groups'}
+            >
+              <svg width="11" height="11" viewBox="0 0 18 18" className={`transition-transform ${allCollapsed ? '-rotate-90' : ''}`}>
+                <path d="M4 6.5L9 11.5L14 6.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              {allCollapsed ? 'Expand all' : 'Collapse all'}
+            </button>
+          )}
+        </div>
       </div>
 
       <div className={

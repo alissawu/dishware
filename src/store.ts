@@ -54,8 +54,9 @@ export function useCart() {
   const [cart, setCartState] = useState<Cart>(readCache)
   const [sync, setSync] = useState<SyncState>(() => (getDb() ? 'connecting' : 'local'))
   const dbRef = useRef(getDb())
-  // Ignore our own optimistic echoes causing needless churn is unnecessary here;
-  // onValue always reflects server truth, which we happily accept.
+  // The first server snapshot is reconciled against the local cache so a wiped
+  // or empty server can't silently blow away a cart that still exists locally.
+  const seeded = useRef(false)
 
   useEffect(() => {
     const db = dbRef.current
@@ -67,7 +68,7 @@ export function useCart() {
     let unsubConn = () => {}
     let cancelled = false
     ;(async () => {
-      const { ref, onValue } = await import('firebase/database')
+      const { ref, onValue, update } = await import('firebase/database')
       if (cancelled) return
       // Live cart data
       unsubValue = onValue(ref(db, `carts/${ROOM}`), (snap) => {
@@ -78,6 +79,25 @@ export function useCart() {
           const q = clampQty(Number(val[k]))
           if (q > 0) clean[k] = q
         }
+
+        // First snapshot only: merge with the local cache instead of trusting the
+        // server blindly. This makes localStorage a true fallback — if the server
+        // was wiped (deploy, stray delete, someone hitting the open DB) but this
+        // device still remembers items, we restore them AND push them back up so
+        // the shared cart heals. Server values win per-key conflicts.
+        if (!seeded.current) {
+          seeded.current = true
+          const local = readCache()
+          const merged: Cart = { ...local, ...clean }
+          setCartState(merged)
+          writeCache(merged)
+          const healsServer = Object.keys(merged).some((k) => merged[k] !== clean[k])
+          if (healsServer) update(ref(db, `carts/${ROOM}`), merged).catch(() => {})
+          return
+        }
+
+        // After the initial reconcile, follow server truth live (including real
+        // clears made during an active session).
         setCartState(clean)
         writeCache(clean)
       })

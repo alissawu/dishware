@@ -35,16 +35,10 @@ export default function App() {
   const toggleGroup = (key: string) =>
     setCollapsedArr((arr) => (arr.includes(key) ? arr.filter((k) => k !== key) : [...arr, key]))
 
-  const allKeys = useMemo(
-    () => shown.flatMap((c) => [...new Set(c.items.map((i) => `${c.id}:${i.group}`))]),
-    [shown]
-  )
-  const allCollapsed = allKeys.length > 0 && allKeys.every((k) => collapsed.has(k))
-  const toggleAll = () =>
-    setCollapsedArr((arr) => {
-      if (allCollapsed) return arr.filter((k) => !allKeys.includes(k))
-      return [...new Set([...arr, ...allKeys])]
-    })
+  const setGroupsCollapsed = (keys: string[], collapse: boolean) =>
+    setCollapsedArr((arr) =>
+      collapse ? [...new Set([...arr, ...keys])] : arr.filter((k) => !keys.includes(k))
+    )
 
   const modalItem: Item | null = modalSku
     ? CATALOG.flatMap((c) => c.items).find((i) => i.sku === modalSku) || null
@@ -94,9 +88,6 @@ export default function App() {
             const q = categorySummary(cart, c).qty
             return <Chip key={c.id} label={c.label} count={q} activeChip={active === c.id} onClick={() => setActive(c.id)} />
           })}
-          <button onClick={toggleAll} className="ml-auto flex-none whitespace-nowrap text-xs font-medium text-clayDark underline-offset-4 hover:underline">
-            {allCollapsed ? 'Expand all' : 'Collapse all'}
-          </button>
         </div>
       </header>
 
@@ -126,6 +117,7 @@ export default function App() {
                 density={density}
                 collapsed={collapsed}
                 onToggleGroup={toggleGroup}
+                onToggleGroups={setGroupsCollapsed}
                 onQty={setQty}
                 onOpen={(it) => setModalSku(it.sku)}
               />
