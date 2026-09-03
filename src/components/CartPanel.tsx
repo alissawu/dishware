@@ -8,9 +8,10 @@ type Props = {
   onOpen: (item: Item) => void
   onClear: () => void
   compactHeader?: boolean
+  hideHeader?: boolean
 }
 
-export default function CartPanel({ categories, cart, onQty, onOpen, onClear, compactHeader }: Props) {
+export default function CartPanel({ categories, cart, onQty, onOpen, onClear, compactHeader, hideHeader }: Props) {
   const lines = categories
     .map((cat) => {
       const sum = categorySummary(cart, cat)
@@ -24,17 +25,19 @@ export default function CartPanel({ categories, cart, onQty, onOpen, onClear, co
   const totalQty = lines.reduce((a, l) => a + l.sum.qty, 0)
 
   return (
-    <div className="flex h-full flex-col">
-      <div className="flex items-center justify-between border-b border-line px-4 py-3">
-        <h2 className={`font-display text-ink ${compactHeader ? 'text-lg' : 'text-xl'}`}>Your order</h2>
-        {totalQty > 0 && (
-          <button onClick={onClear} className="text-xs text-muted underline-offset-4 hover:text-clayDark hover:underline">
-            Clear all
-          </button>
-        )}
-      </div>
+    <div className="flex h-full min-h-0 flex-col">
+      {!hideHeader && (
+        <div className="flex items-center justify-between border-b border-line px-4 py-3">
+          <h2 className={`font-display text-ink ${compactHeader ? 'text-lg' : 'text-xl'}`}>Your order</h2>
+          {totalQty > 0 && (
+            <button onClick={onClear} className="text-xs text-muted underline-offset-4 hover:text-clayDark hover:underline">
+              Clear all
+            </button>
+          )}
+        </div>
+      )}
 
-      <div className="flex-1 overflow-y-auto px-4 py-3">
+      <div className="flex-1 overflow-y-auto px-3 py-3 sm:px-4">
         {lines.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center gap-2 py-16 text-center">
             <div className="grid h-14 w-14 place-items-center rounded-full border-2 border-dashed border-line text-muted">
@@ -59,8 +62,8 @@ export default function CartPanel({ categories, cart, onQty, onOpen, onClear, co
                     const q = cart[it.sku] || 0
                     const u = itemUnit(it, q)
                     return (
-                      <div key={it.sku} className="flex items-center gap-2.5 rounded-lg bg-card px-2 py-1.5">
-                        <button onClick={() => onOpen(it)} className="h-10 w-10 flex-none overflow-hidden rounded-md bg-[#efe8db]">
+                      <div key={it.sku} className="flex items-center gap-2.5 rounded-lg bg-card px-2 py-2">
+                        <button onClick={() => onOpen(it)} className="h-11 w-11 flex-none overflow-hidden rounded-md bg-[#efe8db]">
                           <img src={it.img} alt={it.color} loading="lazy" className="h-full w-full object-cover" />
                         </button>
                         <div className="min-w-0 flex-1">
@@ -76,13 +79,13 @@ export default function CartPanel({ categories, cart, onQty, onOpen, onClear, co
                           </a>
                           <div className="truncate text-[11px] text-muted">{it.color} · {it.groupLabel} · {money(u)} ea</div>
                         </div>
-                        <div className="flex flex-none items-center gap-1">
-                          <button onClick={() => onQty(it.sku, q - 1)} className="grid h-6 w-6 place-items-center rounded-full text-ink/60 hover:bg-clay/10 hover:text-clayDark" aria-label="Decrease">
-                            <svg width="12" height="12" viewBox="0 0 14 14"><path d="M2.5 7h9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg>
+                        <div className="flex flex-none items-center gap-0.5 rounded-full border border-line/70 bg-paper/60">
+                          <button onClick={() => onQty(it.sku, q - 1)} className="grid h-8 w-8 place-items-center rounded-full text-ink/60 hover:bg-clay/10 hover:text-clayDark" aria-label="Decrease">
+                            <svg width="13" height="13" viewBox="0 0 14 14"><path d="M2.5 7h9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg>
                           </button>
-                          <span className="w-5 text-center text-xs font-medium tabular-nums">{q}</span>
-                          <button onClick={() => onQty(it.sku, q + 1)} className="grid h-6 w-6 place-items-center rounded-full text-ink/60 hover:bg-clay/10 hover:text-clayDark" aria-label="Increase">
-                            <svg width="12" height="12" viewBox="0 0 14 14"><path d="M7 2.5v9M2.5 7h9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg>
+                          <span className="w-5 text-center text-sm font-medium tabular-nums">{q}</span>
+                          <button onClick={() => onQty(it.sku, q + 1)} className="grid h-8 w-8 place-items-center rounded-full text-ink/60 hover:bg-clay/10 hover:text-clayDark" aria-label="Increase">
+                            <svg width="13" height="13" viewBox="0 0 14 14"><path d="M7 2.5v9M2.5 7h9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg>
                           </button>
                         </div>
                         <div className="w-14 flex-none text-right font-display text-sm tabular-nums text-ink">{money(u * q)}</div>

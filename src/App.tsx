@@ -45,6 +45,13 @@ export default function App() {
     : null
   const modalCat = modalItem ? CATALOG.find((c) => c.id === modalItem.category) : undefined
 
+  // Lock background scroll while the cart drawer or a detail modal is open (mobile).
+  useEffect(() => {
+    const open = drawer || modalSku != null
+    document.body.style.overflow = open ? 'hidden' : ''
+    return () => { document.body.style.overflow = '' }
+  }, [drawer, modalSku])
+
   return (
     <div className="relative z-[1] min-h-screen">
       {/* header */}
@@ -70,10 +77,11 @@ export default function App() {
             </button>
             <button
               onClick={() => setDrawer(true)}
-              className="relative flex h-8 items-center gap-1.5 rounded-full bg-ink px-3 text-sm font-medium text-paper transition hover:bg-ink/90"
+              aria-label="View your order"
+              className="relative flex h-9 items-center gap-1.5 rounded-full bg-ink px-3.5 text-sm font-medium text-paper transition hover:bg-ink/90"
             >
-              <svg width="15" height="15" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" strokeWidth="1.3"/><circle cx="8" cy="8" r="2.4" fill="none" stroke="currentColor" strokeWidth="1.3"/></svg>
-              {money(grand.sum)}
+              <svg width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.2" fill="none" stroke="currentColor" strokeWidth="1.3"/><circle cx="8" cy="8" r="2.4" fill="none" stroke="currentColor" strokeWidth="1.3"/></svg>
+              <span className="tabular-nums">{money(grand.sum)}</span>
               {grand.qty > 0 && (
                 <span className="grid h-4 min-w-4 place-items-center rounded-full bg-clay px-1 text-[10px] font-semibold">{grand.qty}</span>
               )}
@@ -93,12 +101,12 @@ export default function App() {
 
       {/* hero — comfortable + not split only */}
       {density === 'comfortable' && !split && active === 'all' && (
-        <div className="mx-auto max-w-[1600px] px-4 pt-9 sm:px-6">
-          <p className="mb-3 text-xs font-medium uppercase tracking-[0.18em] text-clay">Vintage glazed ceramics · wholesale</p>
-          <h1 className="max-w-2xl font-display text-4xl leading-[1.05] text-ink sm:text-5xl">
-            Plates, bowls & saucers,<br />one running total.
+        <div className="mx-auto max-w-[1600px] px-4 pt-6 sm:px-6 sm:pt-9">
+          <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.18em] text-clay sm:mb-3 sm:text-xs">Vintage glazed ceramics · wholesale</p>
+          <h1 className="max-w-2xl font-display text-3xl leading-[1.08] text-ink sm:text-5xl sm:leading-[1.05]">
+            Plates, bowls &amp; saucers,<span className="hidden sm:inline"><br /></span> one running total.
           </h1>
-          <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-muted">
+          <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted sm:mt-4 sm:text-[15px]">
             Every style across all categories. Quantities update live, and volume pricing
             applies per style (2 / 4 / 6% off once you buy 10 / 20 / 30 of the same one).
           </p>
@@ -174,18 +182,51 @@ export default function App() {
               initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
               transition={{ type: 'spring', stiffness: 380, damping: 40 }}
             >
-              <button onClick={() => setDrawer(false)} className="absolute -left-11 top-4 hidden h-9 w-9 place-items-center rounded-full bg-paper text-ink shadow-soft sm:grid" aria-label="Close">
-                <svg width="16" height="16" viewBox="0 0 16 16"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/></svg>
-              </button>
-              <CartPanel categories={CATALOG} cart={cart} onQty={setQty} onOpen={(it) => setModalSku(it.sku)} onClear={clear} />
-              <div className="border-t border-line p-3">
-                <a
-                  href={CATALOG.find((c) => c.id === (active === 'all' ? 'plates' : active))?.url}
-                  target="_blank" rel="noreferrer"
-                  className="block rounded-full bg-clay py-3 text-center text-sm font-semibold text-paper transition hover:bg-clayDark"
+              {/* always-visible top bar: clear way back to browsing */}
+              <div className="flex flex-none items-center gap-2 border-b border-line px-3 py-2.5 sm:px-4">
+                <button
+                  onClick={() => setDrawer(false)}
+                  className="flex items-center gap-1 rounded-full py-1.5 pl-1.5 pr-3 text-sm font-medium text-ink transition-colors hover:bg-ink/5"
+                  aria-label="Back to products"
                 >
-                  Order on Everful
-                </a>
+                  <svg width="18" height="18" viewBox="0 0 18 18"><path d="M11 4.5L6.5 9l4.5 4.5" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                  Products
+                </button>
+                <h2 className="font-display text-lg text-ink">Your order</h2>
+                {grand.qty > 0 && (
+                  <button onClick={clear} className="ml-auto text-xs text-muted underline-offset-4 hover:text-clayDark hover:underline">
+                    Clear all
+                  </button>
+                )}
+              </div>
+
+              <CartPanel categories={CATALOG} cart={cart} onQty={setQty} onOpen={(it) => setModalSku(it.sku)} onClear={clear} hideHeader />
+
+              <div className="flex-none border-t border-line p-3">
+                {grand.qty > 0 ? (
+                  <div className="grid grid-cols-[auto_1fr] gap-2">
+                    <button
+                      onClick={() => setDrawer(false)}
+                      className="rounded-full border border-line bg-card px-4 py-3 text-sm font-semibold text-ink transition-colors hover:border-clay/40"
+                    >
+                      Keep browsing
+                    </button>
+                    <a
+                      href={CATALOG.find((c) => c.id === (active === 'all' ? 'plates' : active))?.url}
+                      target="_blank" rel="noreferrer"
+                      className="block rounded-full bg-clay py-3 text-center text-sm font-semibold text-paper transition hover:bg-clayDark"
+                    >
+                      Order on Everful
+                    </a>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setDrawer(false)}
+                    className="block w-full rounded-full bg-ink py-3 text-center text-sm font-semibold text-paper transition hover:bg-ink/90"
+                  >
+                    Browse products
+                  </button>
+                )}
               </div>
             </motion.aside>
           </motion.div>
