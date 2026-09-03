@@ -4,9 +4,10 @@ type Props = {
   value: number
   onChange: (n: number) => void
   size?: 'nano' | 'xs' | 'sm' | 'md'
+  block?: boolean
 }
 
-export default function QtyStepper({ value, onChange, size = 'md' }: Props) {
+export default function QtyStepper({ value, onChange, size = 'md', block }: Props) {
   const [draft, setDraft] = useState(String(value || ''))
   const focused = useRef(false)
 
@@ -30,9 +31,13 @@ export default function QtyStepper({ value, onChange, size = 'md' }: Props) {
       ? { pad: 'h-8 w-8', box: 'h-8 w-11 text-sm', ic: 14 }
       : { pad: 'h-9 w-9', box: 'h-9 w-12 text-base', ic: 14 }
 
+  const boxCls = block
+    ? `flex-1 min-w-0 ${size === 'md' ? 'h-9 text-base' : 'h-8 text-sm'}`
+    : dims.box
+
   return (
     <div
-      className={`inline-flex items-center rounded-full border transition-colors ${
+      className={`items-center rounded-full border transition-colors ${block ? 'flex w-full' : 'inline-flex'} ${
         active ? 'border-clay/40 bg-clay/[0.06]' : 'border-line bg-white/60'
       }`}
     >
@@ -55,7 +60,7 @@ export default function QtyStepper({ value, onChange, size = 'md' }: Props) {
         onBlur={(e) => { focused.current = false; commit(e.target.value) }}
         onChange={(e) => setDraft(e.target.value.replace(/[^\d]/g, ''))}
         onKeyDown={(e) => { if (e.key === 'Enter') (e.target as HTMLInputElement).blur() }}
-        className={`${dims.box} bg-transparent text-center font-medium tabular-nums text-ink outline-none placeholder:text-muted/50`}
+        className={`${boxCls} bg-transparent text-center font-medium tabular-nums text-ink outline-none placeholder:text-muted/50`}
       />
       <button
         type="button"

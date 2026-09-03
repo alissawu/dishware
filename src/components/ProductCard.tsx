@@ -88,7 +88,7 @@ function ProductCardBase({ item, qty, unit, discounted, href, compact, onQty, on
           {qty}
         </div>
       )}
-      <div className="relative aspect-square overflow-hidden bg-[#efe8db]">
+      <div className="relative aspect-[4/3] overflow-hidden bg-[#efe8db] sm:aspect-square">
         <img
           src={item.img}
           alt={`${item.name} — ${item.color}`}
@@ -102,9 +102,9 @@ function ProductCardBase({ item, qty, unit, discounted, href, compact, onQty, on
         </span>
       </div>
 
-      <div className="flex flex-1 flex-col gap-2 p-3.5">
+      <div className="flex flex-1 flex-col gap-2 p-3 sm:p-3.5">
         <div className="flex items-start justify-between gap-2">
-          <h3 className="font-display text-[15px] leading-tight text-ink">{item.name}</h3>
+          <h3 className="font-display text-sm leading-tight text-ink sm:text-[15px]">{item.name}</h3>
           <ExternalLink href={href} className="mt-0.5 shrink-0" />
         </div>
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted">
@@ -115,20 +115,20 @@ function ProductCardBase({ item, qty, unit, discounted, href, compact, onQty, on
         </div>
         {item.dims && item.dims !== item.color && <p className="text-xs text-muted">{item.dims}</p>}
 
-        <div className="mt-auto flex items-end justify-between pt-2">
-          <div className="leading-none">
+        <div className="mt-auto flex flex-col gap-2 pt-2">
+          <div className="flex items-baseline gap-1.5 leading-none">
             {discounted ? (
-              <div className="flex items-baseline gap-1.5">
+              <>
                 <span className="font-display text-lg text-clayDark">{money(unit)}</span>
                 <span className="text-xs text-muted line-through">{money(item.price)}</span>
-              </div>
+              </>
             ) : (
               <span className="font-display text-lg text-ink">{money(unit)}</span>
             )}
-            <span className="ml-0.5 text-[11px] text-muted">/ea</span>
+            <span className="text-[11px] text-muted">/ea</span>
           </div>
           <div onClick={stop} onKeyDown={stop}>
-            <QtyStepper value={qty} onChange={onQty} size="sm" />
+            <QtyStepper value={qty} onChange={onQty} size="sm" block />
           </div>
         </div>
       </div>
