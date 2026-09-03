@@ -10,11 +10,11 @@ html { scroll-behavior: smooth; }
 
 body {
   margin: 0;
-  background-color: #f2eee5;
+  background-color: #f3ede1;
   background-image:
-    radial-gradient(1100px 620px at 88% -12%, rgba(156,116,87,0.045), transparent 62%),
-    radial-gradient(900px 520px at -12% 112%, rgba(120,112,94,0.05), transparent 58%);
-  color: #34302a;
+    radial-gradient(1100px 620px at 88% -12%, rgba(92,113,131,0.07), transparent 62%),
+    radial-gradient(900px 520px at -12% 112%, rgba(135,120,92,0.07), transparent 58%);
+  color: #332e27;
   font-family: 'Instrument Sans', system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -24,7 +24,7 @@ body {
 body::before {
   content: "";
   position: fixed; inset: 0; z-index: 0; pointer-events: none;
-  opacity: 0.22;
+  opacity: 0.28;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.35'/%3E%3C/svg%3E");
   mix-blend-mode: multiply;
 }
@@ -34,8 +34,8 @@ input[type=number]::-webkit-outer-spin-button,
 input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
 input[type=number] { -moz-appearance: textfield; }
 
-::selection { background: #9c7457; color: #f2eee5; }
+::selection { background: #5c7183; color: #f3ede1; }
 
 /* thin scrollbar */
 *::-webkit-scrollbar { width: 10px; height: 10px; }
-*::-webkit-scrollbar-thumb { background: #dcd4c5; border-radius: 999px; border: 3px solid #f2eee5; }
+*::-webkit-scrollbar-thumb { background: #dcd4c5; border-radius: 999px; border: 3px solid #f3ede1; }
